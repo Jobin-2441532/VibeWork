@@ -1,0 +1,26 @@
+Tech Stack Document – Freelancing Marketplace Platform
+This document describes the approved technology stack for the Freelancing Marketplace Platform. The chosen stack fully supports the Product Requirements Document (PRD) and Design Document, including role-based access, dashboards, animations, and real-world deployment readiness.
+1. Stack Compatibility Summary
+The selected technology stack is well-suited for building a scalable, secure, and production-ready two-sided freelancing marketplace. It supports RESTful APIs, role-based authentication, dynamic dashboards, email notifications, and animated modern UI designs as defined in the PRD and Design Document.
+2. Frontend Technologies
+Frontend is built using HTML5, CSS3, and Vanilla JavaScript to ensure full control and understanding of the codebase. Tailwind CSS is used for rapid UI development, responsive layouts, and clean design implementation. All scroll-based and micro animations defined in the design document can be implemented using CSS transitions, JavaScript event listeners, and lightweight animation logic.
+3. Backend Technologies
+The backend is developed using Django and Django REST Framework (DRF). Django handles core business logic, while DRF exposes REST APIs consumed by the frontend. This architecture cleanly supports separate job provider and freelancer workflows.
+4. Database
+PostgreSQL is used as the primary relational database. It stores users, roles, job postings, applications, dashboard metrics, and notification records. PostgreSQL ensures data integrity, scalability, and production-level reliability.
+5. Authentication & Authorization
+JWT authentication is implemented using Django SimpleJWT. Users authenticate once and receive tokens for secure API access. Role-based access control ensures job providers and freelancers can only access authorized endpoints.
+6. Notifications System
+SMTP email is used for account verification, job application alerts, and status updates. Real-time in-app notifications are handled using backend-triggered notification records and frontend polling or lightweight real-time updates.
+7. Dashboards & Analytics
+Chart.js is used on the frontend to display analytics dashboards. Job providers view job and applicant statistics, while freelancers view application progress. Data is fetched from Django REST APIs and rendered dynamically.
+8. Application Flow
+The overall application flow follows a clean architecture: User interacts with frontend → frontend calls Django REST API → backend processes logic → database updates and notifications are triggered.
+9. Development Tools
+VS Code is used as the primary IDE with GitHub Copilot and Cursor AI for assisted development. Python is used for backend development. DBeaver is used for PostgreSQL database management and inspection. Apidog is used for API testing, documentation, and validation.
+10. Deployment Readiness
+The stack supports deployment on cloud platforms. Django REST backend can be deployed behind a production server, while the frontend can be served as static files. JWT-based authentication and PostgreSQL ensure secure and scalable deployment.
+11. Constraints & Compliance
+All technologies used strictly adhere to the allowed stack. No external frontend frameworks or unauthorized libraries are required. This ensures academic compliance while maintaining real-world quality.
+12. Conclusion
+The selected technology stack fully aligns with the PRD and Design Document. It supports modern UI design, animations, secure authentication, real-time feedback, and production-level deployment, making it suitable for both academic evaluation and real-world use.

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>
+        Log In - VibeWork
+    </title>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { primary: '#1d8954', secondary: '#135c38', accent: '#a5eed0', dark: '#111827', light: '#f9fafb' }, fontFamily: { sans: ['Inter', 'sans-serif'] } } } }
+    </script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+</head>
+
+<body class="bg-gray-50 flex min-h-screen">
+    <div
+        class="flex flex-1 shadow-2xl overflow-hidden m-0 md:m-8 rounded-none md:rounded-3xl bg-white border border-gray-100 items-stretch">
+        <!-- Left Banner -->
+        <div
+            class="hidden md:flex flex-col w-1/2 bg-gradient-to-br from-secondary to-primary p-12 text-white relative items-center justify-center">
+            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10">
+            </div>
+            <div class="relative z-10 text-center">
+                <i class="fa-solid fa-leaf text-5xl mb-6">
+                </i>
+                <h2 class="text-4xl font-bold mb-4">
+                    Welcome Back!
+                </h2>
+                <p class="text-emerald-50 text-lg opacity-80">
+                    Log in to manage your freelance business, contracts, and view live analytics.
+                </p>
+            </div>
+        </div>
+        <!-- Right Form -->
+        <div class="w-full md:w-1/2 p-8 md:p-16 flex flex-col justify-center bg-white relative">
+            <a class="absolute top-8 right-8 text-gray-400 hover:text-gray-800 transition" href="/">
+                <i class="fa-solid fa-xmark text-xl">
+                </i>
+            </a>
+            <div class="mb-10 text-center md:text-left">
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">
+                    Log in to VibeWork
+                </h3>
+                <p class="text-gray-500 text-sm">
+                    Don't have an account?
+                    <a class="text-primary font-semibold hover:underline" href="register.html">
+                        Sign up
+                    </a>
+                </p>
+            </div>
+            <div class="hidden mb-4 p-4 text-sm text-red-700 bg-red-100 rounded-lg" id="alert" role="alert">
+            </div>
+            <form class="space-y-6" id="loginForm">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Username
+                    </label>
+                    <input
+                        class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all shadow-sm"
+                        id="username" placeholder="Enter your username" required="" type="text" />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Password
+                    </label>
+                    <input
+                        class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all shadow-sm"
+                        id="password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" required=""
+                        type="password" />
+                </div>
+                <!-- Theme Toggle -->
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <input class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary" id="remember"
+                            type="checkbox" />
+                        <label class="ml-2 block text-sm text-gray-600" for="remember">
+                            Remember me
+                        </label>
+                    </div>
+                    <a class="text-sm font-medium text-primary hover:text-secondary" href="#">
+                        Forgot your password?
+                    </a>
+                </div>
+                <button
+                    class="w-full py-3.5 px-4 border border-transparent rounded-xl shadow-md text-sm font-bold text-white bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all"
+                    type="submit">
+                    Sign In
+                </button>
+            </form>
+        </div>
+    </div>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { primary: '#1d8954', secondary: '#135c38', accent: '#a5eed0', dark: '#111827', light: '#f9fafb' }, fontFamily: { sans: ['Inter', 'sans-serif'] } } } }
+    </script>
+    <script>
+        const API_URL = 'http://127.0.0.1:8000/api';
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const alertBox = document.getElementById('alert');
+            try {
+                const res = await fetch(`${API_URL}/auth/login/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    localStorage.setItem('access', data.access);
+                    localStorage.setItem('refresh', data.refresh);
+                    localStorage.setItem('role', data.role);
+                    if (data.role === 'PROVIDER') {
+                        window.location.href = 'provider_dashboard.html';
+                    } else {
+                        window.location.href = 'freelancer_dashboard.html';
+                    }
+                } else {
+                    alertBox.textContent = 'Invalid username or password.';
+                    alertBox.classList.remove('hidden');
+                }
+            } catch (err) {
+                alertBox.textContent = 'Server error. Please ensure the backend is running.';
+                alertBox.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+
+</html>
