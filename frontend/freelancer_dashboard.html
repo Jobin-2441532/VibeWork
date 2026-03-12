@@ -89,8 +89,8 @@
                 </div>
                 <div class="flex items-center gap-3 border-l border-gray-200 pl-6 relative">
                     <!-- Notifications -->
-                    <button class="relative p-2 text-gray-400 hover:text-gray-600 transition-colors"
-                        onclick="toggleNotifications()">
+                    <button id="notifBtn" class="relative p-2 text-gray-400 hover:text-gray-600 transition-colors"
+                        onclick="document.getElementById('notifDropdown').classList.toggle('hidden')">
                         <i class="fa-regular fa-bell text-xl">
                         </i>
                         <span
@@ -675,7 +675,7 @@
             postReviewForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const job = document.getElementById('revJobId').value;
-                const rating = document.getElementById('revRating').value;
+                const rating = parseInt(document.getElementById('revRating').value, 10);
                 const comment = document.getElementById('revComment').value;
                 try {
                     const res = await fetch(`${API_URL}/reviews/`, {
@@ -703,7 +703,7 @@
         const notifBadge = document.getElementById('notifBadge');
         const notifDropdown = document.getElementById('notifDropdown');
         document.addEventListener('click', (e) => {
-            if (notifDropdown && !e.target.closest('#notifDropdown') && !e.target.closest('[onclick*=\"notif\"]')) {
+            if (notifDropdown && !e.target.closest('#notifDropdown') && !e.target.closest('#notifBtn')) {
                 notifDropdown.classList.add('hidden');
             }
         });

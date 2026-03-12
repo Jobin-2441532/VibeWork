@@ -96,7 +96,7 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = ['id', 'job', 'reviewer', 'reviewee', 'rating', 'comment', 'created_at', 'reviewer_username', 'reviewee_username', 'job_title']
-        read_only_fields = ['reviewer', 'created_at']
+        read_only_fields = ['reviewer', 'reviewee', 'created_at']
 
 class NotificationSerializer(serializers.ModelSerializer):
     class Meta:

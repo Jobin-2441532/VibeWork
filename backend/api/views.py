@@ -3,6 +3,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.db.models import Count, Sum, Q
+from django.core.mail import send_mail
+from django.conf import settings
 from .models import User, Job, Application, Profile, Review, Notification
 from .serializers import (
     UserSerializer, JobSerializer, ApplicationSerializer,
@@ -13,6 +15,42 @@ class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.AllowAny]
+
+    def perform_create(self, serializer):
+        user = serializer.save()
+        if user.email:
+            try:
+                html_message = f"""
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; color: #333;">
+                    <div style="background-color: #1a1a2e; padding: 20px; text-align: center;">
+                        <h1 style="color: #4facfe; margin: 0;">VibeWork</h1>
+                    </div>
+                    <div style="padding: 20px;">
+                        <h2 style="color: #333;">Welcome aboard, {user.username}!</h2>
+                        <p>We are absolutely thrilled to have you join <strong>VibeWork</strong>, the premier freelance marketplace.</p>
+                        <p>Whether you're here to hire top talent or find your next big project, you're in the right place.</p>
+                        <div style="text-align: center; margin: 20px 0;">
+                            <img src="http://127.0.0.1:3000/vibework_promo_banner.png" alt="VibeWork Promo" style="width: 100%; max-width: 500px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                        </div>
+                        <p style="text-align: center;">
+                            <a href="http://127.0.0.1:3000/" style="background-color: #4facfe; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">Explore the Marketplace</a>
+                        </p>
+                    </div>
+                    <div style="background-color: #f7f7f7; padding: 15px; text-align: center; font-size: 12px; color: #888;">
+                        &copy; 2026 VibeWork. All rights reserved.
+                    </div>
+                </div>
+                """
+                send_mail(
+                    subject='Welcome to VibeWork!',
+                    message=f'Hi {user.username},\n\nWelcome to VibeWork - The Premier Freelance Marketplace! We are excited to have you on board.',
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[user.email],
+                    fail_silently=False,
+                    html_message=html_message
+                )
+            except Exception as e:
+                print(f"Failed to send email: {e}")
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
@@ -88,6 +126,40 @@ class ApplicationDetailView(generics.RetrieveUpdateAPIView):
                     title=f"Application {new_status.title()}",
                     message=f"Your application for '{instance.job.title}' was {new_status.lower()}.",
                 )
+                
+                # Send email if application is accepted
+                if new_status == 'ACCEPTED' and instance.freelancer.email:
+                    try:
+                        html_message = f"""
+                        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; color: #333;">
+                            <div style="background-color: #1a1a2e; padding: 20px; text-align: center;">
+                                <h1 style="color: #4facfe; margin: 0;">VibeWork</h1>
+                            </div>
+                            <div style="padding: 20px;">
+                                <h2 style="color: #333;">Congratulations, {instance.freelancer.username}!</h2>
+                                <p>Great news! Your application for the job <strong>'{instance.job.title}'</strong> has been accepted by the provider <strong>'{user.username}'</strong>.</p>
+                                <div style="text-align: center; margin: 20px 0;">
+                                    <img src="http://127.0.0.1:3000/vibework_promo_banner.png" alt="VibeWork Promo" style="width: 100%; max-width: 500px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                                </div>
+                                <p style="text-align: center;">
+                                    <a href="http://127.0.0.1:3000/freelancer_dashboard.html" style="background-color: #4facfe; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">View Your Dashboard</a>
+                                </p>
+                            </div>
+                            <div style="background-color: #f7f7f7; padding: 15px; text-align: center; font-size: 12px; color: #888;">
+                                &copy; 2026 VibeWork. All rights reserved.
+                            </div>
+                        </div>
+                        """
+                        send_mail(
+                            subject='Your Application was Accepted!',
+                            message=f"Hi {instance.freelancer.username},\n\nGreat news! Your application for the job '{instance.job.title}' has been accepted by the provider '{user.username}'.\n\nGood luck with the project!\n\nThe VibeWork Team",
+                            from_email=settings.DEFAULT_FROM_EMAIL,
+                            recipient_list=[instance.freelancer.email],
+                            fail_silently=False,
+                            html_message=html_message
+                        )
+                    except Exception as e:
+                        print(f"Failed to send acceptance email: {e}")
                 
             if new_completed and not old_completed:
                 instance.is_completed = True

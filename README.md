@@ -1,4 +1,4 @@
-# Beanstalk - Freelance Marketplace
+# VibeWork - Freelance Marketplace
 
 A premium, two-sided marketplace built with **Django REST Framework** (Backend) and **Vanilla HTML/JS + Tailwind CSS** (Frontend).
 
