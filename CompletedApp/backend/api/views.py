@@ -76,26 +76,6 @@ class JobListView(generics.ListCreateAPIView):
             return Job.objects.filter(provider=self.request.user).order_by('-created_at')
         return super().get_queryset()
 
-
-class JobDetailView(generics.RetrieveDestroyAPIView):
-    queryset = Job.objects.all()
-    serializer_class = JobSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_object(self):
-        obj = super().get_object()
-        if self.request.method in ['DELETE', 'PUT', 'PATCH']:
-            if obj.provider != self.request.user:
-                from rest_framework.exceptions import PermissionDenied
-                raise PermissionDenied('You can only delete your own job posts.')
-        return obj
-
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        instance.delete()
-        return Response({'detail': 'Job deleted successfully.'}, status=status.HTTP_200_OK)
-
-
 class ApplicationListView(generics.ListCreateAPIView):
     queryset = Application.objects.all()
     serializer_class = ApplicationSerializer
@@ -224,16 +204,11 @@ class DashboardStatsView(APIView):
             total_applications = Application.objects.filter(freelancer=user).count()
             accepted = Application.objects.filter(freelancer=user, status='ACCEPTED').count()
             rejected = Application.objects.filter(freelancer=user, status='REJECTED').count()
-            # Total earnings = sum of budgets of all accepted jobs
-            total_earnings = Application.objects.filter(
-                freelancer=user, status='ACCEPTED'
-            ).aggregate(total=Sum('job__budget'))['total'] or 0
-
+            
             return Response({
                 'total_applications': total_applications,
                 'accepted': accepted,
                 'rejected': rejected,
-                'total_earnings': float(total_earnings),
             })
         return Response({'detail': 'Role undefined'}, status=400)
 
@@ -282,47 +257,23 @@ class ReviewListCreateView(generics.ListCreateAPIView):
         user = self.request.user
         return Review.objects.filter(Q(reviewer=user) | Q(reviewee=user)).order_by('-created_at')
 
-    def create(self, request, *args, **kwargs):
-        from rest_framework.response import Response
-        from rest_framework import status as drf_status
-        from django.db import IntegrityError
-
-        user = request.user
-        serializer = self.get_serializer(data=request.data)
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=drf_status.HTTP_400_BAD_REQUEST)
-
+    def perform_create(self, serializer):
+        user = self.request.user
         job = serializer.validated_data['job']
-
-        # Check for duplicate review
-        if Review.objects.filter(reviewer=user, job=job).exists():
-            return Response({'detail': 'You have already submitted a review for this job.'}, status=drf_status.HTTP_400_BAD_REQUEST)
-
-        # Determine reviewee
+        
+        # Determine who is the reviewee based on who is reviewing.
         if user.role == 'PROVIDER':
-            app = Application.objects.filter(job=job).filter(
-                Q(status='ACCEPTED') | Q(is_completed=True)
-            ).first()
-            if not app:
-                return Response({'detail': 'No accepted freelancer found for this job.'}, status=drf_status.HTTP_400_BAD_REQUEST)
-            reviewee = app.freelancer
+            # Provider reviewing freelancer
+            app = Application.objects.filter(job=job, status='ACCEPTED').first()
+            if app:
+                reviewee = app.freelancer
+            else:
+                raise serializers.ValidationError("No accepted freelancer found for this job.")
         else:
-            # Freelancer reviewing provider — verify they applied and were accepted
-            app = Application.objects.filter(job=job, freelancer=user).filter(
-                Q(status='ACCEPTED') | Q(is_completed=True)
-            ).first()
-            if not app:
-                return Response({'detail': 'You can only review a job you were accepted for.'}, status=drf_status.HTTP_400_BAD_REQUEST)
+            # Freelancer reviewing provider
             reviewee = job.provider
-
-        try:
-            serializer.save(reviewer=user, reviewee=reviewee, job=job)
-        except IntegrityError:
-            return Response({'detail': 'You have already submitted a review for this job.'}, status=drf_status.HTTP_400_BAD_REQUEST)
-
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=drf_status.HTTP_201_CREATED, headers=headers)
-
+            
+        serializer.save(reviewer=user, reviewee=reviewee, job=job)
 
 class NotificationListView(generics.ListAPIView):
     serializer_class = NotificationSerializer

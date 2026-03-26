@@ -4,7 +4,6 @@ from .views import (
     RegisterView,
     CustomTokenObtainPairView,
     JobListView,
-    JobDetailView,
     ApplicationListView,
     ApplicationDetailView,
     DashboardStatsView,
@@ -20,7 +19,6 @@ urlpatterns = [
     path('auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     
     path('jobs/', JobListView.as_view(), name='job-list'),
-    path('jobs/<int:pk>/', JobDetailView.as_view(), name='job-detail'),
     path('applications/', ApplicationListView.as_view(), name='application-list'),
     path('applications/<int:pk>/', ApplicationDetailView.as_view(), name='application-detail'),
     

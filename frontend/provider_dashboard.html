@@ -31,6 +31,12 @@
 </head>
 
 <body class="bg-gray-50 text-gray-800 antialiased flex h-screen overflow-hidden transition-colors duration-300">
+    <!-- Global Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-white/80 backdrop-blur-sm z-[100] flex flex-col items-center justify-center transition-opacity duration-300">
+        <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary mb-4"></div>
+        <p class="text-gray-900 font-bold text-xl tracking-tight mb-1">VIBE<span class="text-primary">WORK</span></p>
+        <p class="text-gray-500 font-medium text-sm">Loading your dashboard...</p>
+    </div>
     <!-- Sidebar -->
     <aside class="w-64 bg-white border-r border-gray-200 flex flex-col transition-colors z-20">
         <div class="h-20 flex items-center px-6 border-b border-gray-100">
@@ -199,52 +205,43 @@
                     <!-- Main Grid -->
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         <!-- Analytics Chart -->
-                        <div
-                            class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 p-6 transition-colors">
+                        <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 p-6 transition-colors">
                             <div class="flex justify-between items-center mb-6">
-                                <h3 class="text-lg font-bold text-gray-900">
-                                    Application Analytics
-                                </h3>
+                                <h3 class="text-lg font-bold text-gray-900">Application Analytics</h3>
                             </div>
-                            <div class="h-64 relative w-full flex items-center justify-between">
+                            <div class="h-56 relative w-full flex items-center justify-between">
                                 <div class="w-1/2 h-full flex items-center justify-center">
                                     <canvas id="analyticsChart"></canvas>
                                 </div>
-                                <div class="w-1/2 pl-8 flex flex-col justify-center gap-4">
-                                    <div class="flex items-start gap-4 p-4 rounded-xl bg-orange-50 border border-orange-100">
-                                        <div class="mt-1 bg-yellow-400 text-yellow-900 w-8 h-8 rounded-full flex items-center justify-center font-bold">
-                                            <i class="fa-solid fa-hourglass-half"></i>
+                                <div class="w-1/2 pl-6 flex flex-col justify-center gap-3">
+                                    <div class="flex items-start gap-3 p-3 rounded-xl bg-orange-50 border border-orange-100">
+                                        <div class="mt-0.5 bg-yellow-400 text-yellow-900 w-7 h-7 rounded-full flex items-center justify-center font-bold flex-shrink-0">
+                                            <i class="fa-solid fa-hourglass-half text-xs"></i>
                                         </div>
                                         <div>
-                                            <p class="text-xs font-bold text-orange-800 uppercase tracking-wider mb-1">Attention Needed</p>
-                                            <p class="text-sm text-gray-700">Review pending applications to narrow down your top candidates.</p>
+                                            <p class="text-xs font-bold text-orange-800 uppercase tracking-wider mb-0.5">Attention Needed</p>
+                                            <p class="text-xs text-gray-700">Review pending applications to narrow down your top candidates.</p>
                                         </div>
                                     </div>
-                                    <div class="flex items-start gap-4 p-4 rounded-xl bg-green-50 border border-green-100">
-                                        <div class="mt-1 bg-green-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">
-                                            <i class="fa-solid fa-check-double"></i>
+                                    <div class="flex items-start gap-3 p-3 rounded-xl bg-green-50 border border-green-100">
+                                        <div class="mt-0.5 bg-green-500 text-white w-7 h-7 rounded-full flex items-center justify-center font-bold flex-shrink-0">
+                                            <i class="fa-solid fa-check-double text-xs"></i>
                                         </div>
                                         <div>
-                                            <p class="text-xs font-bold text-green-800 uppercase tracking-wider mb-1">Moving Forward</p>
-                                            <p class="text-sm text-gray-700">Track accepted applications and monitor completed milestones.</p>
+                                            <p class="text-xs font-bold text-green-800 uppercase tracking-wider mb-0.5">Moving Forward</p>
+                                            <p class="text-xs text-gray-700">Track accepted applications and monitor completed milestones.</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <!-- Active Jobs List -->
-                        <div
-                            class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col h-full transition-colors">
-                            <div class="flex justify-between items-center mb-6">
-                                <h3 class="text-lg font-bold text-gray-900">
-                                    Recent Jobs
-                                </h3>
-                                <a class="text-sm text-primary font-medium hover:underline" href="#"
-                                    onclick="switchTab('jobs')">
-                                    See All
-                                </a>
+                        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col transition-colors" style="max-height:340px">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-bold text-gray-900">Recent Jobs</h3>
+                                <a class="text-sm text-primary font-medium hover:underline" href="#" onclick="switchTab('jobs')">See All</a>
                             </div>
-                            <div class="flex-1 overflow-y-auto space-y-4 pr-2" id="jobsList">
+                            <div class="flex-1 overflow-y-auto space-y-3 pr-1" id="jobsList">
                                 <!-- Jobs injected via JS -->
                             </div>
                         </div>
@@ -272,9 +269,12 @@
                 </div>
                 <!-- TAB: APPLICATIONS -->
                 <div class="hidden space-y-6" id="tab-apps">
-                    <h2 class="text-2xl font-bold text-gray-900">
-                        Received Applications
-                    </h2>
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-2xl font-bold text-gray-900">Received Applications</h2>
+                        <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg shadow-sm font-medium transition-colors flex items-center gap-2 text-sm" onclick="renderCompareModal(); document.getElementById('compareModal').classList.remove('hidden')">
+                            <i class="fa-solid fa-scale-balanced"></i> Compare Applicants
+                        </button>
+                    </div>
                     <div
                         class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden transition-colors">
                         <table class="w-full text-left border-collapse border-b-0">
@@ -304,54 +304,66 @@
                     </div>
                 </div>
                 <!-- TAB: MY PROFILE -->
-                <div class="hidden space-y-6 max-w-3xl" id="tab-profile">
-                    <h2 class="text-2xl font-bold text-gray-900">
-                        Company Settings
-                    </h2>
-                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 transition-colors">
-                        <form class="space-y-6" id="profileForm">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                                        Username
-                                    </label>
-                                    <input
-                                        class="w-full px-4 py-2 border border-gray-200 bg-gray-50 rounded-lg text-gray-500 cursor-not-allowed"
-                                        disabled="" id="profUser" type="text" />
+                <div class="hidden space-y-6 max-w-6xl" id="tab-profile">
+                    <h2 class="text-2xl font-bold text-gray-900">Company Settings</h2>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 p-8 transition-colors">
+                            <h3 class="text-lg font-bold text-gray-900 mb-6">Edit Profile</h3>
+                            <form class="space-y-6" id="profileForm">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                                        <input class="w-full px-4 py-2 border border-gray-200 bg-gray-50 rounded-lg text-gray-500 cursor-not-allowed" disabled="" id="profUser" type="text" />
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                        <input class="w-full px-4 py-2 border border-gray-200 bg-gray-50 rounded-lg text-gray-500 cursor-not-allowed" disabled="" id="profEmail" type="email" />
+                                    </div>
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                                        Email
-                                    </label>
-                                    <input
-                                        class="w-full px-4 py-2 border border-gray-200 bg-gray-50 rounded-lg text-gray-500 cursor-not-allowed"
-                                        disabled="" id="profEmail" type="email" />
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+                                    <input class="w-full px-4 py-2 border border-gray-300 bg-white text-gray-900 rounded-lg focus:ring-2 focus:ring-primary outline-none transition-colors" id="profCompany" placeholder="Acme Corp" type="text" />
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Company Website</label>
+                                    <input class="w-full px-4 py-2 border border-gray-300 bg-white text-gray-900 rounded-lg focus:ring-2 focus:ring-primary outline-none transition-colors" id="profWebsite" placeholder="https://acme.com" type="url" />
+                                </div>
+                                <div class="pt-4 border-t border-gray-100 flex justify-end">
+                                    <button class="px-6 py-2.5 bg-primary text-white rounded-lg font-medium hover:bg-secondary shadow-sm transition-colors" type="submit">Save Settings</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="space-y-6">
+                            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                                <h3 class="text-lg font-bold text-gray-900 mb-4">Public Stats</h3>
+                                <div class="space-y-4">
+                                    <div class="flex justify-between items-center pb-4 border-b border-gray-100">
+                                        <span class="text-gray-500">Jobs Posted</span>
+                                        <span class="font-bold text-gray-900" id="profStatJobs">-</span>
+                                    </div>
+                                    <div class="flex justify-between items-center pb-4 border-b border-gray-100">
+                                        <span class="text-gray-500">Total Hires</span>
+                                        <span class="font-bold text-gray-900">-</span>
+                                    </div>
+                                    <div class="flex justify-between items-center text-yellow-500">
+                                        <span class="text-gray-500">Average Rating</span>
+                                        <span class="font-bold" id="profStatRating"><i class="fa-solid fa-star mr-1"></i> 0.0</span>
+                                    </div>
                                 </div>
                             </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">
-                                    Company Name
-                                </label>
-                                <input
-                                    class="w-full px-4 py-2 border border-gray-300 bg-white text-gray-900 rounded-lg focus:ring-2 focus:ring-primary outline-none transition-colors"
-                                    id="profCompany" placeholder="Acme Corp" type="text" />
+                            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                                <h3 class="text-lg font-bold text-gray-900 mb-4">Recent Reviews</h3>
+                                <div class="space-y-4">
+                                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                        <div class="flex items-center gap-2 mb-2">
+                                            <div class="flex text-yellow-400 text-xs"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                                            <span class="text-xs font-bold text-gray-600">John D.</span>
+                                        </div>
+                                        <p class="text-sm text-gray-600 italic">"Great client to work with. Clear communication and prompt payments."</p>
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">
-                                    Company Website
-                                </label>
-                                <input
-                                    class="w-full px-4 py-2 border border-gray-300 bg-white text-gray-900 rounded-lg focus:ring-2 focus:ring-primary outline-none transition-colors"
-                                    id="profWebsite" placeholder="https://acme.com" type="url" />
-                            </div>
-                            <div class="pt-4 border-t border-gray-100 flex justify-end">
-                                <button
-                                    class="px-6 py-2.5 bg-primary text-white rounded-lg font-medium hover:bg-secondary shadow-sm transition-colors"
-                                    type="submit">
-                                    Save Settings
-                                </button>
-                            </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -371,41 +383,40 @@
                     </i>
                 </button>
             </div>
-            <form class="p-6 space-y-4" id="postJobForm">
+            <form class="p-6 space-y-4 max-h-[80vh] overflow-y-auto" id="postJobForm">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                        Job Title
-                    </label>
-                    <input
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
-                        id="jobTitle" required="" type="text" />
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Job Title</label>
+                    <input class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none" id="jobTitle" required="" type="text" />
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                        Budget (₹)
-                    </label>
-                    <input
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
-                        id="jobBudget" required="" type="number" />
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Budget (₹)</label>
+                    <input class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none" id="jobBudget" required="" type="number" />
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                        Description
-                    </label>
-                    <textarea
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
-                        id="jobDesc" required="" rows="4"></textarea>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <textarea class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none" id="jobDesc" required="" rows="3"></textarea>
+                </div>
+                <!-- Milestone Builder -->
+                <div class="border border-dashed border-gray-300 rounded-xl p-4 bg-gray-50">
+                    <div class="flex justify-between items-center mb-3">
+                        <p class="text-sm font-semibold text-gray-700"><i class="fa-solid fa-money-check-dollar text-blue-500 mr-1.5"></i>Milestones <span class="text-xs font-normal text-gray-400">(optional)</span></p>
+                    </div>
+                    <div class="space-y-2 mb-3" id="inlineJobMilestones">
+                        <p class="text-xs text-gray-400 text-center py-1" id="noMilestoneHint">No milestones added yet</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" id="inlineMsTitle" class="col-span-2 px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-1 focus:ring-primary" placeholder="Milestone title (e.g. Design Delivery)">
+                        <div class="relative">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm font-bold">₹</span>
+                            <input type="number" id="inlineMsAmount" class="w-full pl-7 pr-2 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-1 focus:ring-primary" placeholder="Amount" min="0">
+                        </div>
+                        <input type="date" id="inlineMsDue" class="px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-1 focus:ring-primary">
+                    </div>
+                    <button type="button" onclick="addInlineMilestone()" class="mt-2 w-full py-2 text-xs font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"><i class="fa-solid fa-plus mr-1"></i>Add Milestone</button>
                 </div>
                 <div class="pt-4 flex justify-end gap-3">
-                    <button
-                        class="px-5 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50"
-                        onclick="document.getElementById('jobModal').classList.add('hidden')" type="button">
-                        Cancel
-                    </button>
-                    <button class="px-5 py-2 bg-primary text-white rounded-lg font-medium hover:bg-secondary shadow-sm"
-                        type="submit">
-                        Post Job
-                    </button>
+                    <button class="px-5 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50" onclick="document.getElementById('jobModal').classList.add('hidden')" type="button">Cancel</button>
+                    <button class="px-5 py-2 bg-primary text-white rounded-lg font-medium hover:bg-secondary shadow-sm" type="submit">Post Job</button>
                 </div>
             </form>
         </div>
@@ -450,6 +461,125 @@
             </form>
         </div>
     </div>
+    
+    <!-- Applicant Compare Modal -->
+    <div class="hidden fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50 flex items-center justify-center" id="compareModal">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-6xl overflow-hidden transform transition-all max-h-[90vh] flex flex-col">
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50 flex-shrink-0">
+                <div>
+                    <h3 class="text-xl font-bold text-gray-900">Compare Applicants</h3>
+                    <p class="text-sm text-gray-500 mt-0.5">Showing all freelancers who applied for the same jobs</p>
+                </div>
+                <button class="text-gray-400 hover:text-gray-600" onclick="document.getElementById('compareModal').classList.add('hidden')"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="p-6 overflow-auto">
+                <div id="compareTableContainer">
+                    <p class="text-gray-400 text-center py-10">Loading applicant data...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interview Schedule Modal -->
+    <div class="hidden fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50 flex items-center justify-center" id="interviewModal">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-gray-900"><i class="fa-regular fa-calendar-check text-purple-600 mr-2"></i>Schedule Interview</h3>
+                <button class="text-gray-400 hover:text-gray-600" onclick="document.getElementById('interviewModal').classList.add('hidden')"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <form class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                        <input type="date" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Time</label>
+                        <input type="time" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Meeting Link (Zoom / Meet)</label>
+                    <input type="url" class="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none" placeholder="https://meet.google.com/...">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Notes for Candidate</label>
+                    <textarea class="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none" rows="2" placeholder="Prepare to talk about past React projects..."></textarea>
+                </div>
+                <div class="pt-4 flex justify-end gap-3">
+                    <button class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50" type="button" onclick="document.getElementById('interviewModal').classList.add('hidden')">Cancel</button>
+                    <button class="px-4 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 shadow-sm" type="button" onclick="document.getElementById('interviewModal').classList.add('hidden'); alert('Interview Invitation Sent!')">Send Invite</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Milestone Payment Modal -->
+    <div class="hidden fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50 flex items-center justify-center" id="milestoneModal">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden transform transition-all p-6">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h3 class="text-xl font-bold text-gray-900"><i class="fa-solid fa-money-check-dollar text-blue-600 mr-2"></i>Job Milestones</h3>
+                    <p class="text-sm text-gray-500 mt-0.5" id="milestoneJobLabel">Add milestones to track payment stages</p>
+                </div>
+                <button class="text-gray-400 hover:text-gray-600" onclick="document.getElementById('milestoneModal').classList.add('hidden')"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="space-y-3 mb-6 max-h-64 overflow-y-auto" id="milestoneList">
+                <!-- Milestones injected dynamically -->
+                <p class="text-gray-400 text-sm text-center py-4">No milestones yet. Add one below.</p>
+            </div>
+            <form class="pt-4 border-t border-gray-100 space-y-3" onsubmit="addMilestone(event)">
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="col-span-2">
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Milestone Title</label>
+                        <input type="text" id="msTitle" class="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-primary text-sm" placeholder="e.g. Frontend Design" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Amount (₹)</label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-bold">₹</span>
+                            <input type="number" id="msAmount" class="w-full pl-7 pr-3 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-primary text-sm" placeholder="5000" required min="0">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Due Date</label>
+                        <input type="date" id="msDueDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-primary text-sm">
+                    </div>
+                </div>
+                <button class="w-full py-2.5 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2" type="submit">
+                    <i class="fa-solid fa-plus"></i> Add Milestone
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Job Boost Modal -->
+    <div class="hidden fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50 flex items-center justify-center" id="boostModal">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all">
+            <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 p-6 flex justify-between items-start text-white">
+                <div>
+                    <h3 class="text-xl font-bold mb-1"><i class="fa-solid fa-rocket mr-2"></i>Boost Your Job</h3>
+                    <p class="text-sm text-yellow-50">Get up to 5x more applications by standing out.</p>
+                </div>
+                <button class="text-white hover:text-yellow-100" onclick="document.getElementById('boostModal').classList.add('hidden')"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="p-6 space-y-4">
+                <div class="border-2 border-yellow-400 bg-yellow-50 rounded-xl p-4 cursor-pointer relative">
+                    <div class="absolute top-2 right-2 text-yellow-500"><i class="fa-solid fa-circle-check text-xl"></i></div>
+                    <h4 class="font-bold text-gray-900 text-lg">Featured Placement</h4>
+                    <p class="text-sm text-gray-600 mb-2">Pin to top of search results for 7 days.</p>
+                    <p class="font-black text-2xl text-gray-900">₹2,499<span class="text-sm font-normal text-gray-500"> / week</span></p>
+                </div>
+                <div class="border border-gray-200 rounded-xl p-4 cursor-pointer hover:border-gray-300">
+                    <h4 class="font-bold text-gray-900 text-lg">Urgent Tag</h4>
+                    <p class="text-sm text-gray-600 mb-2">Highlight job with red urgent banner.</p>
+                    <p class="font-black text-2xl text-gray-900">₹999<span class="text-sm font-normal text-gray-500"> / once</span></p>
+                </div>
+                <button class="w-full py-3 bg-gray-900 text-white rounded-lg font-bold hover:bg-gray-800 transition-colors mt-4" type="button" onclick="document.getElementById('boostModal').classList.add('hidden'); showToast('Job Boosted!');">Confirm &amp; Pay</button>
+            </div>
+        </div>
+    </div>
+
     <script>
 
         const API_URL = 'http://127.0.0.1:8000/api';
@@ -481,6 +611,7 @@
                 if (document.getElementById('stat-jobs')) document.getElementById('stat-jobs').innerText = stats.total_jobs || 0;
                 if (document.getElementById('stat-apps')) document.getElementById('stat-apps').innerText = stats.total_applications || 0;
                 if (document.getElementById('stat-budget')) document.getElementById('stat-budget').innerText = '₹' + (parseFloat(stats.total_budget || 0).toFixed(0));
+                if (document.getElementById('profStatJobs')) document.getElementById('profStatJobs').innerText = stats.total_jobs || 0;
 
                 // My Jobs
                 const jobsRes = await fetch(`${API_URL}/jobs/`, { headers: authHeaders });
@@ -491,16 +622,74 @@
                 const appsRes = await fetch(`${API_URL}/applications/`, { headers: authHeaders });
                 const apps = await appsRes.json();
                 const appsArray = Array.isArray(apps) ? apps : [];
+                window.allAppsData = appsArray; // Store for compare modal
                 renderApplications(appsArray);
                 
                 // Render Chart.js
                 renderAnalyticsChart(appsArray);
-
+                
+                // Fetch reviews for profile
+                const reviewsRes = await fetch(`${API_URL}/reviews/`, { headers: authHeaders });
+                const reviews = await reviewsRes.json();
+                renderReviews(Array.isArray(reviews) ? reviews : []);
             } catch (err) {
                 console.error('Dashboard error:', err);
+            } finally {
+                const loader = document.getElementById('loadingOverlay');
+                if (loader) {
+                    loader.classList.add('opacity-0');
+                    setTimeout(() => loader.classList.add('hidden'), 300);
+                }
             }
         }
 
+        async function deleteJob(jobId) {
+            if (!confirm('Are you sure you want to delete this job post? This will remove it from all freelancer pages and delete associated applications.')) return;
+            try {
+                const res = await fetch(`${API_URL}/jobs/${jobId}/`, {
+                    method: 'DELETE',
+                    headers: authHeaders
+                });
+                if (res.ok) {
+                    showToast('Job deleted successfully');
+                    fetchDashboardData();
+                } else {
+                    alert('Failed to delete job.');
+                }
+            } catch (err) {
+                alert('Server error while deleting job.');
+            }
+        }
+
+        function renderReviews(reviews) {
+            const container = document.querySelector('#tab-profile .space-y-4');
+            if (!container) return;
+            
+            // Only show reviews where the user is the reviewee (received)
+            const received = reviews.filter(r => r.reviewee_username === localStorage.getItem('username'));
+
+            if (received.length === 0) {
+                container.innerHTML = `<p class="text-sm text-gray-400 text-center py-4">No reviews received yet.</p>`;
+                return;
+            }
+
+            container.innerHTML = received.slice(0, 5).map(rev => `
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="flex items-center gap-2">
+                            <div class="flex text-yellow-400 text-xs">
+                                ${Array(rev.rating).fill('<i class="fa-solid fa-star"></i>').join('')}
+                                ${Array(5 - rev.rating).fill('<i class="fa-regular fa-star"></i>').join('')}
+                            </div>
+                            <span class="text-xs font-bold text-gray-600">${rev.reviewer_username}</span>
+                        </div>
+                        <span class="text-[10px] text-gray-400">${new Date(rev.created_at).toLocaleDateString()}</span>
+                    </div>
+                    <p class="text-sm text-gray-600 italic">"${rev.comment || 'No comment provided.'}"</p>
+                    <p class="text-[10px] text-primary mt-1 font-medium">Job: ${rev.job_title}</p>
+                </div>
+            `).join('');
+        }
         let analyticsChartInstance = null;
         function renderAnalyticsChart(apps) {
             const ctx = document.getElementById('analyticsChart');
@@ -550,6 +739,82 @@
             });
         }
 
+        function renderCompareModal() {
+            const container = document.getElementById('compareTableContainer');
+            if (!container) return;
+            const apps = window.allAppsData || [];
+            if (apps.length === 0) {
+                container.innerHTML = '<p class="text-gray-400 text-center py-16"><i class="fa-regular fa-folder-open text-4xl mb-3 block"></i>No applications received yet. Post a job to start receiving applications!</p>';
+                return;
+            }
+
+            // Group apps by job title
+            const byJob = {};
+            apps.forEach(app => {
+                const key = app.job_title || `Job #${app.job}`;
+                if (!byJob[key]) byJob[key] = [];
+                byJob[key].push(app);
+            });
+
+            const colors = ['bg-indigo-100 text-indigo-600', 'bg-green-100 text-green-600', 'bg-purple-100 text-purple-600', 'bg-orange-100 text-orange-600', 'bg-pink-100 text-pink-600'];
+
+            const sections = Object.entries(byJob).map(([jobTitle, jobApps]) => {
+                const rows = jobApps.map((app, i) => {
+                    const name = app.freelancer_username || 'Freelancer';
+                    const initials = name.slice(0, 2).toUpperCase();
+                    const colorClass = colors[i % colors.length];
+                    const skills = app.freelancer_skills
+                        ? app.freelancer_skills.split(',').slice(0, 4).map(s => `<span class="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full whitespace-nowrap">${s.trim()}</span>`).join('')
+                        : '<span class="text-xs text-gray-400">Not listed</span>';
+                    const portfolioLink = app.freelancer_portfolio
+                        ? `<a href="${app.freelancer_portfolio}" target="_blank" class="text-xs text-blue-600 hover:underline"><i class="fa-brands fa-github mr-1"></i>Portfolio</a>`
+                        : '<span class="text-xs text-gray-400">—</span>';
+                    const statusColor = app.status === 'ACCEPTED' ? 'border-green-500 text-green-700' : app.status === 'REJECTED' ? 'border-red-400 text-red-600' : 'border-yellow-400 text-yellow-700';
+                    const statusLabel = app.status === 'ACCEPTED' ? 'Hired' : app.status === 'REJECTED' ? 'Rejected' : 'Pending';
+                    const coverSnip = app.cover_letter ? app.cover_letter.substring(0, 80) + (app.cover_letter.length > 80 ? '…' : '') : '—';
+                    return `
+                <tr class="hover:bg-indigo-50/20 transition-colors">
+                    <td class="p-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold flex-shrink-0 ${colorClass}">${initials}</div>
+                            <div>
+                                <p class="font-bold text-gray-900">${name}</p>
+                                ${portfolioLink}
+                            </div>
+                        </div>
+                    </td>
+                    <td class="p-4"><div class="flex flex-wrap gap-1">${skills}</div></td>
+                    <td class="p-4 text-sm text-gray-600 max-w-xs">${coverSnip}</td>
+                    <td class="p-4 text-center">
+                        <div class="inline-flex items-center justify-center w-14 h-14 rounded-full border-4 ${statusColor} font-bold text-xs">${statusLabel}</div>
+                    </td>
+                </tr>`;
+                }).join('');
+
+                return `
+            <div class="mb-8">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-2 h-6 bg-primary rounded-full"></div>
+                    <h4 class="font-bold text-gray-900 text-base">${jobTitle}</h4>
+                    <span class="text-xs bg-indigo-100 text-indigo-700 px-2.5 py-1 rounded-full font-semibold">${jobApps.length} applicant${jobApps.length !== 1 ? 's' : ''}</span>
+                </div>
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-50 border-b border-gray-200 text-sm">
+                            <th class="p-3 font-semibold text-gray-600">Applicant</th>
+                            <th class="p-3 font-semibold text-gray-600">Skills</th>
+                            <th class="p-3 font-semibold text-gray-600">Cover Letter (preview)</th>
+                            <th class="p-3 font-semibold text-gray-600 text-center">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100 text-sm">${rows}</tbody>
+                </table>
+            </div>`;
+            }).join('');
+
+            container.innerHTML = sections;
+        }
+
         function renderMyJobs(jobs) {
             // Render for the overview mini-list (jobsList) and the full My Jobs tab (fullJobsGrid)
             const mini = document.getElementById('jobsList');
@@ -567,13 +832,26 @@
                 const date = new Date(job.created_at).toLocaleDateString();
                 const budget = job.budget ? `₹${parseFloat(job.budget).toFixed(0)}` : 'Negotiable';
                 return `
-        <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
+        <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow flex flex-col h-full">
             <div class="flex justify-between items-start mb-2">
                 <h3 class="font-bold text-gray-900">${job.title}</h3>
-                <span class="text-primary font-semibold text-sm bg-green-50 px-3 py-1 rounded-full">${budget}</span>
+                <span class="text-primary font-semibold text-sm bg-green-50 px-3 py-1 rounded-full whitespace-nowrap ml-2">${budget}</span>
             </div>
-            <p class="text-gray-500 text-sm mb-3">${job.description.substring(0, 120)}${job.description.length > 120 ? '...' : ''}</p>
-            <span class="text-xs text-gray-400"><i class="fa-regular fa-clock mr-1"></i>${date}</span>
+            <p class="text-gray-500 text-sm mb-4 flex-1">${job.description.substring(0, 120)}${job.description.length > 120 ? '...' : ''}</p>
+            <div class="flex justify-between items-center pt-3 border-t border-gray-100 flex-wrap gap-2">
+                <span class="text-xs text-gray-400"><i class="fa-regular fa-clock mr-1"></i>${date}</span>
+                <div class="flex gap-2 relative">
+                    <button class="text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded transition-colors" onclick="deleteJob(${job.id})">
+                        <i class="fa-solid fa-trash"></i> Delete
+                    </button>
+                    <button class="text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded transition-colors" onclick="openMilestoneModal('${job.title}')">
+                        <i class="fa-solid fa-money-check-dollar"></i> Milestones
+                    </button>
+                    <button class="text-xs font-bold text-white bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 px-3 py-1.5 rounded shadow-sm transition-all whitespace-nowrap" onclick="document.getElementById('boostModal').classList.remove('hidden')">
+                        <i class="fa-solid fa-rocket"></i> Boost
+                    </button>
+                </div>
+            </div>
         </div>`;
             }).join('');
 
@@ -607,27 +885,29 @@
                     : '<span class="text-xs text-gray-400">No resume</span>';
                 return `
         <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors align-top">
-            <td class="py-4 px-4">
+            <td class="py-4 px-4 w-1/4">
                 <p class="font-semibold text-gray-900">${app.freelancer_username || 'Freelancer'}</p>
-                <div class="mt-1 flex flex-col gap-1">
+                <div class="mt-1 flex flex-col gap-1 w-full">
                     ${portfolioLink}
                     ${resumeLink}
                 </div>
             </td>
-            <td class="py-4 px-4 text-sm text-gray-600">${app.job_title || '-'}</td>
-            <td class="py-4 px-4">${skills}</td>
-            <td class="py-4 px-4 text-xs text-gray-500 max-w-xs">${app.cover_letter ? app.cover_letter.substring(0, 100) + '...' : '-'}</td>
+            <td class="py-4 px-4 text-sm text-gray-600 max-w-[200px] truncate" title="${app.job_title || ''}">${app.job_title || '-'}</td>
             <td class="py-4 px-4"><span class="text-xs font-semibold px-2 py-1 rounded-full ${color}">${app.status}</span></td>
-            <td class="py-4 px-4">
-                <div class="flex flex-col gap-1.5">
+            <td class="py-4 px-4 text-xs text-gray-500 min-w-[200px] max-w-[300px] line-clamp-3">${app.cover_letter ? app.cover_letter : '-'}</td>
+            <td class="py-4 px-4 text-right">
+                <div class="flex flex-col items-end gap-1.5">
                     ${app.status === 'PENDING' ? `
-                        <button onclick="updateAppStatus(${app.id}, 'ACCEPTED')" class="text-xs bg-green-600 text-white px-3 py-1 rounded-lg hover:bg-green-700 whitespace-nowrap">✓ Accept</button>
-                        <button onclick="updateAppStatus(${app.id}, 'REJECTED')" class="text-xs bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 whitespace-nowrap">✗ Reject</button>
+                        <div class="flex items-center gap-1.5">
+                            <button onclick="updateAppStatus(${app.id}, 'ACCEPTED')" class="text-xs bg-green-600 text-white px-2.5 py-1.5 rounded-md hover:bg-green-700 whitespace-nowrap shadow-sm"><i class="fa-solid fa-check mr-1"></i>Accept</button>
+                            <button onclick="updateAppStatus(${app.id}, 'REJECTED')" class="text-xs bg-red-500 text-white px-2.5 py-1.5 rounded-md hover:bg-red-600 whitespace-nowrap shadow-sm"><i class="fa-solid fa-xmark mr-1"></i>Reject</button>
+                        </div>
+                        <button onclick="document.getElementById('interviewModal').classList.remove('hidden')" class="text-xs bg-purple-600 text-white px-3 py-1.5 rounded-md hover:bg-purple-700 whitespace-nowrap shadow-sm mt-1 w-full text-center"><i class="fa-solid fa-video mr-1"></i>Interview</button>
                     ` : ''}
                     ${app.status === 'ACCEPTED' && !app.is_completed ? `
-                        <button onclick="markComplete(${app.id})" class="text-xs bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700 whitespace-nowrap">✓ Mark Done</button>
+                        <button onclick="markComplete(${app.id})" class="text-xs bg-blue-600 text-white px-3 py-1.5 rounded-md hover:bg-blue-700 whitespace-nowrap shadow-sm"><i class="fa-solid fa-check-double mr-1"></i>Mark Done</button>
                     ` : ''}
-                    <span class="text-xs text-gray-400">${date}</span>
+                    <span class="text-[10px] text-gray-400 mt-1 uppercase font-semibold">${date}</span>
                 </div>
             </td>
         </tr>`;
@@ -635,6 +915,94 @@
         }
 
 
+        // ---- Milestone Logic ----
+        // In-memory milestone store (shared between post-job inline and the modal)
+        window.milestones = window.milestones || [];
+
+        function addInlineMilestone() {
+            const titleEl = document.getElementById('inlineMsTitle');
+            const amountEl = document.getElementById('inlineMsAmount');
+            const dueEl = document.getElementById('inlineMsDue');
+            const title = titleEl.value.trim();
+            const amount = parseFloat(amountEl.value);
+            const due = dueEl.value;
+            if (!title || isNaN(amount) || amount <= 0) {
+                showToast('Please fill in at least a title and a valid amount.');
+                return;
+            }
+            const ms = { title, amount, due, funded: false };
+            window.milestones.push(ms);
+            titleEl.value = ''; amountEl.value = ''; dueEl.value = '';
+            // Render in inline list
+            const hint = document.getElementById('noMilestoneHint');
+            if (hint) hint.remove();
+            const container = document.getElementById('inlineJobMilestones');
+            if (container) {
+                const row = document.createElement('div');
+                row.className = 'flex justify-between items-center bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm';
+                row.innerHTML = `<span class="font-medium text-gray-800">${title}</span><span class="text-primary font-bold">₹${amount.toLocaleString('en-IN')}${due ? ' &nbsp;<span class="text-gray-400 font-normal">' + new Date(due).toLocaleDateString('en-IN') + '</span>' : ''}</span>`;
+                container.appendChild(row);
+            }
+            showToast('Milestone added!');
+        }
+
+        function addMilestone(e) {
+            e.preventDefault();
+            const title = document.getElementById('msTitle').value.trim();
+            const amount = parseFloat(document.getElementById('msAmount').value);
+            const due = document.getElementById('msDueDate').value;
+            if (!title || isNaN(amount) || amount <= 0) {
+                showToast('Please fill in a title and valid amount.');
+                return;
+            }
+            window.milestones.push({ title, amount, due, funded: false });
+            document.getElementById('msTitle').value = '';
+            document.getElementById('msAmount').value = '';
+            document.getElementById('msDueDate').value = '';
+            renderMilestoneList();
+            showToast('Milestone added!');
+        }
+
+        function renderMilestoneList() {
+            const list = document.getElementById('milestoneList');
+            if (!list) return;
+            if (!window.milestones.length) {
+                list.innerHTML = '<p class="text-gray-400 text-sm text-center py-4">No milestones yet. Add one below.</p>';
+                return;
+            }
+            list.innerHTML = window.milestones.map((ms, i) => {
+                const dueStr = ms.due ? new Date(ms.due).toLocaleDateString('en-IN') : 'No deadline';
+                return `
+                <div class="p-3 border border-gray-200 rounded-xl flex justify-between items-center ${ms.funded ? 'bg-green-50' : 'bg-gray-50'}">
+                    <div>
+                        <h4 class="font-bold text-gray-900 text-sm">${ms.title}</h4>
+                        <p class="text-xs text-gray-500">${ms.funded ? '<span class="text-green-600 font-semibold">Funded</span>' : 'Awaiting payment'} &bull; Due: ${dueStr}</p>
+                    </div>
+                    <div class="text-right flex-shrink-0 ml-3">
+                        <p class="font-bold text-gray-900 text-sm">₹${ms.amount.toLocaleString('en-IN')}</p>
+                        ${ms.funded
+                            ? '<button class="mt-1 text-xs bg-green-100 text-green-700 px-2 py-1 rounded font-bold hover:bg-green-200 transition-colors">Release Funds</button>'
+                            : `<button onclick="fundMilestone(${i})" class="mt-1 text-xs bg-blue-600 text-white px-3 py-1 rounded font-bold shadow-sm hover:bg-blue-700">Fund Now</button>`
+                        }
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function fundMilestone(idx) {
+            if (window.milestones[idx]) {
+                window.milestones[idx].funded = true;
+                renderMilestoneList();
+                showToast('Milestone funded!');
+            }
+        }
+
+        function openMilestoneModal(jobTitle) {
+            const label = document.getElementById('milestoneJobLabel');
+            if (label) label.textContent = jobTitle ? `Milestones for: ${jobTitle}` : 'Job Milestones';
+            renderMilestoneList();
+            document.getElementById('milestoneModal').classList.remove('hidden');
+        }
 
         async function updateAppStatus(appId, newStatus) {
             try {

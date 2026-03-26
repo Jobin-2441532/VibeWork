@@ -28,8 +28,6 @@ class JobSerializer(serializers.ModelSerializer):
 class ApplicationSerializer(serializers.ModelSerializer):
     freelancer_username = serializers.ReadOnlyField(source='freelancer.username')
     job_title = serializers.ReadOnlyField(source='job.title')
-    job_budget = serializers.ReadOnlyField(source='job.budget')
-    provider_username = serializers.ReadOnlyField(source='job.provider.username')
     
     freelancer_skills = serializers.SerializerMethodField()
     freelancer_resume = serializers.SerializerMethodField()
@@ -38,8 +36,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Application
         fields = ['id', 'job', 'freelancer', 'cover_letter', 'status', 'is_completed', 'created_at',
-                  'freelancer_username', 'job_title', 'job_budget', 'provider_username',
-                  'freelancer_skills', 'freelancer_resume', 'freelancer_portfolio']
+                  'freelancer_username', 'job_title', 'freelancer_skills', 'freelancer_resume', 'freelancer_portfolio']
         read_only_fields = ['freelancer', 'created_at']
 
     def get_freelancer_skills(self, obj):

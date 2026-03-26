@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>
+    Sign Up - VibeWork
+  </title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: { primary: '#1d8954', secondary: '#135c38', accent: '#a5eed0', dark: '#111827', light: '#f9fafb' }, fontFamily: { sans: ['Inter', 'sans-serif'] } } } }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap"
+    rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background-color: #f3f4f6;
+    }
+  </style>
+</head>
+
+<body class="bg-light flex min-h-screen items-center justify-center p-4 transition-colors">
+  <div
+    class="relative w-full max-w-md mx-4 bg-white rounded-3xl p-8 shadow-2xl shadow-gray-200/50 border border-gray-100 z-10 fade-in-up transition-colors">
+    <div class="text-center mb-8">
+      <a class="inline-flex items-center gap-2 mb-6 hover:opacity-80 transition-opacity" href="/">
+        <i class="fa-solid fa-leaf text-primary text-2xl">
+        </i>
+        <span class="font-bold text-xl tracking-tight text-gray-900">
+          VIBEWORK
+        </span>
+      </a>
+      <h2 class="text-2xl font-bold text-gray-900 mb-2">
+        Create Account
+      </h2>
+      <p class="text-gray-500 text-sm">
+        Join our platform and start your journey.
+      </p>
+    </div>
+    <div class="hidden mb-4 p-4 text-sm text-red-700 bg-red-100 rounded-lg" id="alert" role="alert">
+    </div>
+    <form class="space-y-5" id="registerForm">
+      <!-- Role Selection -->
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          I want to...
+        </label>
+        <div class="grid grid-cols-2 gap-4">
+          <label
+            class="role-card cursor-pointer border-2 border-gray-200 rounded-xl p-4 flex flex-col items-center justify-center text-center hover:border-primary transition-all">
+            <input checked="" class="hidden" name="role" type="radio" value="FREELANCER" />
+            <i class="fa-solid fa-laptop-code text-2xl text-gray-400 mb-2 transition-colors">
+            </i>
+            <span class="font-semibold text-gray-700 text-sm">
+              Work as a Freelancer
+            </span>
+          </label>
+          <label
+            class="role-card cursor-pointer border-2 border-gray-200 rounded-xl p-4 flex flex-col items-center justify-center text-center hover:border-primary transition-all">
+            <input class="hidden" name="role" type="radio" value="PROVIDER" />
+            <i class="fa-solid fa-building text-2xl text-gray-400 mb-2 transition-colors">
+            </i>
+            <span class="font-semibold text-gray-700 text-sm">
+              Hire Talent
+            </span>
+          </label>
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">
+          Username
+        </label>
+        <div class="relative">
+          <i class="fa-regular fa-user absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+          </i>
+          <input
+            class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
+            id="username" required="" type="text" />
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">
+          Email Address
+        </label>
+        <div class="relative">
+          <i class="fa-regular fa-envelope absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+          </i>
+          <input
+            class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
+            id="email" required="" type="email" />
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">
+          Password
+        </label>
+        <div class="relative">
+          <i class="fa-solid fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+          </i>
+          <input
+            class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
+            id="password" minlength="6" required="" type="password" />
+        </div>
+      </div>
+      <button
+        class="w-full py-3.5 px-4 border border-transparent rounded-xl shadow-md text-sm font-bold text-white bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all mt-4"
+        type="submit">
+        Create Account
+      </button>
+    </form>
+    <p class="text-center text-sm text-gray-500 mt-6">
+      Already have an account?
+      <a class="text-primary font-semibold hover:underline" href="login.html">
+        Log in
+      </a>
+    </p>
+  </div>
+  <script>
+    // UX for Role Cards
+    const API_URL = 'http://127.0.0.1:8000/api';
+    const radios = document.querySelectorAll('input[name="role"]');
+    const cards = document.querySelectorAll('.role-card');
+    function updateCards() {
+      cards.forEach(card => {
+        const radio = card.querySelector('input');
+        if (radio.checked) {
+          card.classList.add('selected');
+          card.querySelector('i').classList.replace('text-gray-400', 'text-primary');
+        } else {
+          card.classList.remove('selected');
+          card.querySelector('i').classList.replace('text-primary', 'text-gray-400');
+        }
+      });
+    }
+    radios.forEach(radio => radio.addEventListener('change', updateCards));
+    updateCards();
+
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const role = document.querySelector('input[name="role"]:checked').value;
+      const alertBox = document.getElementById('alert');
+      try {
+        const res = await fetch(`${API_URL}/auth/register/`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, email, password, role })
+        });
+        if (res.ok) {
+          window.location.href = 'login.html';
+        } else {
+          const errorData = await res.json();
+          alertBox.textContent = `Error: ${JSON.stringify(errorData)}`;
+          alertBox.classList.remove('hidden');
+        }
+      } catch (err) {
+        alertBox.textContent = 'Server error. Please ensure the backend is running.';
+        alertBox.classList.remove('hidden');
+      }
+    });
+  </script>
+</body>
+
+</html>
