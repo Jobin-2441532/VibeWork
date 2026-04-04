@@ -99,7 +99,7 @@
         tailwind.config = { theme: { extend: { colors: { primary: '#1d8954', secondary: '#135c38', accent: '#a5eed0', dark: '#111827', light: '#f9fafb' }, fontFamily: { sans: ['Inter', 'sans-serif'] } } } }
     </script>
     <script>
-        const API_URL = 'http://127.0.0.1:8000/api';
+        const API_URL = '/api';
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const username = document.getElementById('username').value;

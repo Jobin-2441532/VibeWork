@@ -650,7 +650,7 @@
     </div>
     <script>
 
-        const API_URL = 'http://127.0.0.1:8000/api';
+        const API_URL = '/api';
 
         const token = localStorage.getItem('access');
         if (!token || localStorage.getItem('role') !== 'FREELANCER') {
@@ -995,7 +995,7 @@
                         currentResumeEl.classList.remove('hidden');
                         const link = currentResumeEl.querySelector('a');
                         if (link) {
-                            link.href = `http://127.0.0.1:8000${profile.resume}`;
+                            link.href = profile.resume;
                             link.textContent = 'View Current Resume';
                         }
                     }
