@@ -1,0 +1,35 @@
+{
+    "version": 2,
+    "builds": [
+        {
+            "src": "backend/marketplace/wsgi.py",
+            "use": "@vercel/python",
+            "config": {
+                "maxLambdaSize": "15mb",
+                "runtime": "python3.10"
+            }
+        },
+        {
+            "src": "frontend/**",
+            "use": "@vercel/static"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/api/(.*)",
+            "dest": "backend/marketplace/wsgi.py"
+        },
+        {
+            "src": "/admin/(.*)",
+            "dest": "backend/marketplace/wsgi.py"
+        },
+        {
+            "src": "/media/(.*)",
+            "dest": "backend/marketplace/wsgi.py"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "frontend/$1"
+        }
+    ]
+}
